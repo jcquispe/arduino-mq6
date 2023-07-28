@@ -4,6 +4,11 @@ module.exports = (sequelize, DataTypes, Model) => {
   Alertas.init(
     {
       // Model attributes are defined here
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       dispositivo: {
         type: DataTypes.STRING,
         allowNull: false,

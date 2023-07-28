@@ -7,9 +7,9 @@ class AlertaRepository {
   constructor() {
     this.db = connect();
     // Para pruebas
-    this.db.sequelize.sync({ force: true }).then(() => {
-      console.log("Sincronizando con la base de datos.");
-    });
+    // this.db.sequelize.sync({ force: true }).then(() => {
+    //   console.log("Sincronizando con la base de datos.");
+    // });
   }
 
   async obtenerAlertas() {

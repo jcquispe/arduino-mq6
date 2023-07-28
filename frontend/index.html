@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arduino Project</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+  <div class="container-lg">
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">ARDUINO PROJECT</a>
+        <button type="button" class="btn btn-success" onclick="window.location.reload();"><i
+            class="bi bi-arrow-clockwise"></i> Actualizar</button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+          aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+          aria-labelledby="offcanvasDarkNavbarLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Opciones</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Usuarios</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Cuenta
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                  <li><a class="dropdown-item" href="#">Acerca de</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row mt-5">
+      <div class="col-md-4 mt-3">
+        <div class="card bg-primary bg-opacity-10">
+          <div class="card-body">
+            <h5 class="card-title text-dark">Arduino <span class="badge bg-primary">A1</span></h5>
+            <p class="fw-lighter text-dark">Cantida de alertas:</p>
+            <div class="text-center" id="alertas-a1"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <div class="card bg-info bg-opacity-10">
+          <div class="card-body">
+            <h5 class="card-title text-dark">Arduino <span class="badge bg-info">A2</span></h5>
+            <p class="fw-lighter text-dark">Cantida de alertas:</p>
+            <div class="text-center" id="alertas-a2"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mt-3">
+        <div class="card bg-secondary bg-opacity-10">
+          <div class="card-body">
+            <h5 class="card-title text-dark">Arduino <span class="badge bg-secondary">A3</span></h5>
+            <p class="fw-lighter text-dark">Cantida de alertas:</p>
+            <div class="text-center" id="alertas-a3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table class="table table-striped border" id="table" style="font-size:0.9em"></table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      dataSet = [];
+      let table = $('#table').DataTable({
+        data: dataSet,
+        columns: [
+          { title: "ID" },
+          { title: "Dispositivo" },
+          { title: "Descripción" },
+          { title: "Medida" },
+          { title: "Fecha" },
+          { title: "Hora" },
+        ],
+        language: {
+          "lengthMenu": "Mostrar _MENU_ filas por página",
+          "zeroRecords": "Lo siento, no se encontró ningún resultado",
+          "info": "Página _PAGE_ de _PAGES_",
+          "infoEmpty": "No hay datos disponibles",
+          "infoFiltered": "(filtrado de _MAX_ registros)",
+          "search": "Buscar",
+          "paginate": {
+            "previous": "Anterior",
+            "next": "Siguiente"
+          }
+        }
+      });
+      let alertasA1 = document.getElementById('alertas-a1');
+      let alertasA2 = document.getElementById('alertas-a2');
+      let alertasA3 = document.getElementById('alertas-a3');
+
+      obtenerDatos();
+
+      function obtenerDatos() {
+        fetch('http://localhost:3081/api/alerta')
+          .then(response => response.json())
+          .then(data => {
+            let a1 = data.filter(a => a.dispositivo === 'A1');
+            let a2 = data.filter(a => a.dispositivo === 'A2');
+            let a3 = data.filter(a => a.dispositivo === 'A3');
+            if (a1.length === 0) {
+              alertasA1.innerHTML = `<div class="badge bg-success text-wrap fs-1" style="width: 9rem;">${a2.length}</div>`;
+            } else if (a1.length < 10) {
+              alertasA1.innerHTML = `<div class="badge bg-warning text-wrap fs-1" style="width: 9rem;">${a1.length}</div>`;
+            } else {
+              alertasA1.innerHTML = `<div class="badge bg-danger text-wrap fs-1" style="width: 9rem;">${a1.length}</div>`;
+            }
+            if (a2.length === 0) {
+              alertasA2.innerHTML = `<div class="badge bg-success text-wrap fs-1" style="width: 9rem;">${a2.length}</div>`;
+            } else if (a2.length < 10) {
+              alertasA2.innerHTML = `<div class="badge bg-warning text-wrap fs-1" style="width: 9rem;">${a2.length}</div>`;
+            } else {
+              alertasA2.innerHTML = `<div class="badge bg-danger text-wrap fs-1" style="width: 9rem;">${a2.length}</div>`;
+            }
+            if (a3.length === 0) {
+              alertasA3.innerHTML = `<div class="badge bg-success text-wrap fs-1" style="width: 9rem;">${a3.length}</div>`;
+            } else if (a3.length < 10) {
+              alertasA3.innerHTML = `<div class="badge bg-warning text-wrap fs-1" style="width: 9rem;">${a3.length}</div>`;
+            } else {
+              alertasA3.innerHTML = `<div class="badge bg-danger text-wrap fs-1" style="width: 9rem;">${a3.length}</div>`;
+            }
+            for (d of data) {
+              if (d.dispositivo === 'A1') {
+                dataset = [[d.id, `<span class="badge rounded-pill bg-primary">${d.dispositivo}</span>`, `<span class="fw-light">${d.descripcion}</span>`, d.medida, d.fecha, d.hora]];
+              } else if (d.dispositivo === 'A2') {
+                dataset = [[d.id, `<span class="badge rounded-pill bg-info">${d.dispositivo}</span>`, `<span class="fw-light">${d.descripcion}</span>`, d.medida, d.fecha, d.hora]];
+              } else {
+                dataset = [[d.id, `<span class="badge rounded-pill bg-secondary">${d.dispositivo}</span>`, `<span class="fw-light">${d.descripcion}</span>`, d.medida, d.fecha, d.hora]];
+              }
+              table.rows.add(dataset).draw();
+            }
+          });
+      }
+    });
+  </script>
+</body>
+
+</html>

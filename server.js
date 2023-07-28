@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 
@@ -18,8 +19,12 @@ app.post("/api/alerta", (req, res) => {
   alertaController.guardarAlerta(req.body).then((data) => res.json(data));
 });
 
+app.get("/api", (req, res) => {
+  res.send(`<h2>El API esta funcionando correctamente!</h2>`);
+});
+
 app.get("/", (req, res) => {
-  res.send(`<h1>El API funciona correctamente!</h1>`);
+  res.sendFile(path.join(__dirname + "/frontend/index.html"));
 });
 
 app.listen(port, () => {
