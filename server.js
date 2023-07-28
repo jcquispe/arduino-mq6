@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(express.static("public"));
 
 app.get("/api/alerta", (req, res) => {
   alertaController.obtenerAlertas().then((data) => res.json(data));
@@ -21,10 +22,6 @@ app.post("/api/alerta", (req, res) => {
 
 app.get("/api", (req, res) => {
   res.send(`<h2>El API esta funcionando correctamente!</h2>`);
-});
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "/frontend/index.html"));
 });
 
 app.listen(port, () => {
