@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 require("dotenv").config();
 
 const alertaController = require("./controller/alerta.controller");
@@ -8,6 +9,7 @@ const alertaController = require("./controller/alerta.controller");
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
