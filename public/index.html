@@ -56,6 +56,14 @@
     </nav>
 
     <div class="row mt-5">
+      <script>
+        let details = navigator.userAgent;
+        let regexp = /android|iphone|kindle|ipad/i;
+        let isMobileDevice = regexp.test(details);
+        if (isMobileDevice) {
+          document.write("<div class='mt-5'></div>");
+        }
+      </script>
       <div class="col-md-4 mt-3">
         <div class="card bg-primary bg-opacity-10">
           <div class="card-body">
@@ -126,7 +134,7 @@
       obtenerDatos();
 
       function obtenerDatos() {
-        fetch('http://localhost:3081/api/alerta')
+        fetch('http://192.168.1.217:3081/api/alerta')
           .then(response => response.json())
           .then(data => {
             let a1 = data.filter(a => a.dispositivo === 'A1');
